@@ -53,14 +53,20 @@ export default function Index() {
       </header>
       <div className="container mx-auto px-4 py-8">
         <section className="mb-10">
-          <h2 className="text-xl font-semibold mb-4 text-center">Öne Çıkan Ürünler</h2>
+          <h2 className="text-xl font-semibold mb-4 text-center">
+            Öne Çıkan Ürünler
+          </h2>
           <Carousel products={horizontalList} />
         </section>
         <section>
-          <h2 className="text-xl font-semibold mb-4 text-center">Tüm Ürünler</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 px-80">
+          <h2 className="text-xl font-semibold mb-4 text-center">
+            Tüm Ürünler
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-6 items-stretch">
             {productList.map((product) => (
-              <ProductCard key={product.code} product={product} />
+              <div key={product.code} className="flex justify-center">
+                <ProductCard product={product} />
+              </div>
             ))}
           </div>
           <Pagination currentPage={currentPage} hasNextPage={hasNextPage} />
