@@ -3,6 +3,8 @@ import { useLoaderData } from "@remix-run/react";
 import { ProductCard } from "~/components/ProductCard";
 import Pagination from "~/components/Pagination";
 import { getProductList } from "~/services/product.server";
+import { useEffect, useState } from "react";
+import { Carousel } from "~/components/Carousel";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
@@ -16,14 +18,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   try {
     const data = await getProductList(apiUrl);
-    return json({ 
+    return json({
       data: {
         horizontalProductList: data?.horizontalProductList ?? [],
         productList: data?.productList ?? [],
         nextUrl: data?.nextUrl ?? null,
-      }, 
+      },
       currentPage,
-      hasNextPage: !!data?.nextUrl
+      hasNextPage: !!data?.nextUrl,
     });
   } catch (error) {
     throw new Response("Ürünler yüklenirken bir hata oluştu", { status: 500 });
@@ -32,40 +34,38 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export default function Index() {
   const { data, currentPage, hasNextPage } = useLoaderData<typeof loader>();
+  const [horizontalList, setHorizontalList] = useState(
+    data.horizontalProductList ?? []
+  );
 
-  const horizontalList = data?.horizontalProductList ?? [];
+  useEffect(() => {
+    if (data.horizontalProductList && data.horizontalProductList.length > 0) {
+      setHorizontalList(data.horizontalProductList);
+    }
+  }, [data.horizontalProductList]);
+
   const productList = data?.productList ?? [];
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">Akakce Ürünleri</h1>
-      <section className="mb-10">
-        <h2 className="text-xl font-semibold mb-4">Öne Çıkan Ürünler</h2>
-        <div className="flex gap-4 overflow-x-auto pb-4">
-          {horizontalList.map((product) => (
-            <ProductCard 
-              key={product.code}
-              product={product} 
-              layout="horizontal" 
-            />
-          ))}
-        </div>
-      </section>
-      <section>
-        <h2 className="text-xl font-semibold mb-4">Tüm Ürünler</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {productList.map((product) => (
-            <ProductCard 
-              key={product.code}
-              product={product} 
-            />
-          ))}
-        </div>
-        <Pagination 
-          currentPage={currentPage} 
-          hasNextPage={hasNextPage} 
-        />
-      </section>
-    </div>
+    <>
+      <header className="bg-blue-100">
+        <h1 className="text-2xl text-blue-100 mb-6">Akakçe</h1>
+      </header>
+      <div className="container mx-auto px-4 py-8">
+        <section className="mb-10">
+          <h2 className="text-xl font-semibold mb-4 text-center">Öne Çıkan Ürünler</h2>
+          <Carousel products={horizontalList} />
+        </section>
+        <section>
+          <h2 className="text-xl font-semibold mb-4 text-center">Tüm Ürünler</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 px-80">
+            {productList.map((product) => (
+              <ProductCard key={product.code} product={product} />
+            ))}
+          </div>
+          <Pagination currentPage={currentPage} hasNextPage={hasNextPage} />
+        </section>
+      </div>
+    </>
   );
 }
