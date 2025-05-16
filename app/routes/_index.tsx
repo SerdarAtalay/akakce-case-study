@@ -62,7 +62,7 @@ export default function Index() {
           <h2 className="text-xl font-semibold mb-4 text-center">
             Tüm Ürünler
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-6 items-stretch">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 items-stretch mx-auto">
             {productList.map((product) => (
               <div key={product.code} className="flex justify-center">
                 <ProductCard product={product} />

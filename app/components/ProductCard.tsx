@@ -27,6 +27,12 @@ export function ProductCard({ product, layout = "vertical" }: ProductCardProps) 
           />
         </div>
 
+        {product.dropRatio > 0 && (
+            <div className="absolute top-6 left-6 bg-red-500 text-white text-xs font-bold rounded-full w-10 h-10 flex items-center justify-center shadow-md">
+              %{product.dropRatio}
+            </div>
+          )}
+
         <div className="p-6">
           <h3 className="text-blue-500 font-medium text-base text-center line-clamp-1 hover:underline mb-1">
             {product.name}
